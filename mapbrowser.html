@@ -1,0 +1,91 @@
+<HTML>
+    <BODY>
+    </BODY>
+    <SCRIPT type="text/javascript"> //defines the script type
+    var map_width; //declares the map_width var
+    var map_height; //declares the map_height var
+    var TILE_WIDTH = 32; //declares the tile_width var
+    var TILE_HEIGHT = 32; //declares the tile_height var
+    var MAX_VIEW_TILES = 800; //declares the maximum amount of tiles that can be in the viewport
+
+    function CallVerb() {//defines a function to call a verb in BYOND's dreamseeker
+        var locstr = "byond://winset?command=" + arguments[0];//assign the static part of the byond URL command to the variable locstr and append the first value in the arguments array onto it
+        //(N.B. - the arguments object contains an array of the arguments used when the function was called)
+        for(var count=1;count<arguments.length;count++) {//for every value in the arguments array except the first one
+            locstr += " " + encodeURIComponent(arguments[count]);//append the value onto the locstr var
+        }
+        window.location = locstr;//set window.location to locstr to execute the byond command
+    }
+
+    function WinSet() {//defines a function to call the winset command in BYOND's dreamseeker
+        var locstr = "byond://winset?id=" + arguments[0];//assign the static part of the byond URL command to the variable locstr and append the first value in the arguments array onto it
+        for(var count=1;count<arguments.length;count+=2) {//for every other two values in the arguments array except the first one
+            locstr += "&" + arguments[count] + "=" + arguments[count+1];//append the value onto the locstr val
+        }  
+        window.location = locstr;//set window.location to locstr to execute the byond command
+    }
+
+    function Output() {//defines a function to call the output command in BYOND's dreamseeker
+        window.location = "byond://winset?command=.output " + arguments[0] + " " + encodeURIComponent(arguments[1]);//set window.location to the command to execute the output operation
+    }
+
+    window.onresize = function() {//function for when the window is resized
+        var body = document.getElementsByTagName('body')[0];//get a reference to the element with the tag body in the document and assign it to the body var
+        map_width = body.clientWidth;//set the map_width var to body.clientWidth
+        map_height = body.clientHeight;//set the map_height var to body.clientHeight
+
+        var map_zoom = 1;//declare the current map zoom as 1
+
+        var view_width = Math.ceil(map_width/TILE_WIDTH);//set view_width to the ceil (rounded up) value of the result of (map_width/TILE_WIDTH)
+        if(!(view_width%2)) ++view_width;//if view_width is an even number add one, this is necessary because if the view values are not odd numbers then it will be impossible for the client character to be centered on the screen
+        var view_height = Math.ceil(map_height/TILE_HEIGHT);//set view_height to the ceil value of the result of (map_height/TILE_HEIGHT)
+        if(!(view_height%2)) ++view_height;//if view_height is an even number add one
+
+        while(view_width*view_height>MAX_VIEW_TILES) {//while the total amount of tiles visible is greateer than the total amount of allowed tiles in a viewport
+            view_width = Math.ceil(map_width/TILE_WIDTH/++map_zoom);//set view_width to the ceil value of the result of (map_width/TILE_WIDTH/++map_zoom) (N.B. - ((map_width/TILE_WIDTH)/++map_zoom)  ) N.B. - ++map_zoom is used here instead of map_zoom++ to make sure that the map_zoom is not only incremented by 1 for future usage, but also so that the incrementation happens before the calculation is carried out
+            if(!(view_width%2)) ++view_width;//if it is even, increment it by one to make it odd
+            view_height = Math.ceil(map_height/TILE_HEIGHT/map_zoom);//set view_height to the ceil value of the result of (height/TILE_HEIGHT/map_zoom)
+            if(!(view_height%2)) ++view_height;//if view_height is even, make it odd
+        }
+
+        var buffer_x = Math.floor((view_width*TILE_WIDTH - map_width/map_zoom)/2);//set the buffer_x value to the floor (rounded down) value of the result of ((view_width*TILE_WIDTH - map_width/map_zoom)/2)
+        var buffer_y = Math.floor((view_height*TILE_HEIGHT - map_height/map_zoom)/2);//set the buffer_y value to the floor value of the result of ((view_height*TILE_HEIGHT - map_height/map_zoom)/2)
+        WinSet("map1","zoom",map_zoom);//call the WinSet function to invoke the winset function in BYOND's dreamseeker, to set the zoom value of the map
+
+        CallVerb("onResize",view_width,view_height,buffer_x,buffer_y,map_zoom);//call the client.onResize verb and pass the appropriate vars into it as arguments
+    };
+
+    window.onload = function() {//when the window first loads
+        CallVerb("onLoad");//call the client.onLoad() verb
+    };
+
+    var isfullscreen = 0;//declare a flag for whether or not the game is in fullscreen mode
+
+    function ToggleFullscreen() {//function for toggle fullscreen on or off
+        if(isfullscreen) {//if it is on, toggle it off
+            WinSet("window1","titlebar","true","is-maximized","false","can-resize","true");//by calling the WinSet function to pass the appropriate command string argument (enabling the titlebar, unmaximizing the window and enabling manual resizing of the window) into the winset() BYOND procedure
+            isfullscreen = 0;//disable the fullscreen flag
+        } else {//if it is off, toggle it on
+            WinSet("window1","titlebar","false")//call the winset function to remove the titlebar
+            WinSet("window1","is-maximized","false");
+            WinSet("window1","is-maximized","true","can-resize","false");//then call it again to maximize the window and disable manual resizing of it
+            isfullscreen = 1;//enable the fullscreen flag
+        }
+    }
+
+    var resolution_x;//declare a variable for the resolution along the x axis of the client screen
+    var resolution_y;//declare a variable for the resolution along the y axis of the client screen
+
+    function CenterWindow() {//function to center the window on the client screen
+        window.location = "byond://winget?callback=CenterWindowCallback&id=window1&property=size";//assign the byond command to the window.location that will use the winget() command to callback the CenterWindowCallback() function and pass the window size values into it
+    }
+
+    function CenterWindowCallback(properties) {
+        var win_width = properties.size.x;//set win_width to the x value of the window size
+        var win_height = properties.size.y;//set win_height to the y value of the window size
+        resolution_x = screen.width;//set resolution_x to the width of the screen
+        resolution_y = screen.height;//set resolution_y to the height of the screen
+        WinSet("default","pos",Math.floor((resolution_x-win_width)/2) + "," + Math.floor((resolution_y-win_height)/2));//call the WinSet function to invoke the winset() BYOND procedure and pass into it a string created by appending the floor values of ((resolution_x-win_width)/2) and ((resolution_y-win_height)/2) separated by a comma
+    }
+    </SCRIPT>
+</HTML>

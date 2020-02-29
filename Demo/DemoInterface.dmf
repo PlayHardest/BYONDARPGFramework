@@ -1,0 +1,81 @@
+macro "macro"
+	elem 
+		name = "F+REP"
+	elem 
+		name = "Any"
+		command = "KeyDown [[*]]"
+	elem 
+		name = "Any+UP"
+		command = "KeyUp [[*]]"
+
+
+menu "menu"
+	elem 
+		name = "&File"
+		command = ""
+		saved-params = "is-checked"
+	elem 
+		name = "&Quit"
+		command = ".quit"
+		category = "&File"
+		saved-params = "is-checked"
+
+
+window "window1"
+	elem "window1"
+		type = MAIN
+		pos = 372,0
+		size = 1306x757
+		anchor1 = none
+		anchor2 = none
+		background-color = none
+		is-default = true
+		saved-params = "pos;size;is-minimized;is-maximized"
+		title = "ARPG Framework"
+		statusbar = false
+		macro = "macro"
+		outer-size = 1324x803
+		inner-size = 1306x757
+	elem "browser1"
+		type = BROWSER
+		pos = 0,0
+		size = 1306x757
+		anchor1 = 0,0
+		anchor2 = 100,100
+		background-color = none
+		is-default = true
+		saved-params = ""
+	elem "map1"
+		type = MAP
+		pos = 0,0
+		size = 1306x757
+		anchor1 = 0,0
+		anchor2 = 100,100
+		is-default = true
+		saved-params = "zoom;letterbox;zoom-mode"
+		on-size = "onResize \"[[id]][[size]]\""
+		icon-size = 32
+		zoom = 1
+
+window "outputwindow"
+	elem "outputwindow"
+		type = MAIN
+		pos = 1249,663
+		size = 640x309
+		anchor1 = none
+		anchor2 = none
+		saved-params = "pos;size;is-minimized;is-maximized"
+		title = "Output"
+		statusbar = false
+		can-close = false
+		can-minimize = false
+		can-resize = false
+	elem "output1"
+		type = OUTPUT
+		pos = 0,0
+		size = 640x316
+		anchor1 = 0,0
+		anchor2 = 100,85
+		is-default = true
+		saved-params = "max-lines"
+

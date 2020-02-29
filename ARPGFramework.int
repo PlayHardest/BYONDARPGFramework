@@ -1,0 +1,20 @@
+// BEGIN_INTERNALS
+/*
+MAP_ZOOM: 1.000
+LAST_COMPILE_TIME: 1583001289
+PACKAGE_RSC_NAME: D:\Documents\BYOND\lib\cheesypants\ARPGFramework\ARPGFramework_rsc.zip
+DIR: Code Demo Icons Icons\Map Icons\Map\Turf Icons\Map\UI Lib Lib\forum_account Lib\forum_account\keyboard Lib\forum_account\text Lib\ter13 Lib\ter13\stdlib 
+AUTO_FILE_DIR: ON
+PACKAGE_DMB_INFO: 
+MAP_ICON_TYPE: 0
+PACKAGE_DME_NAME: D:\Documents\BYOND\lib\cheesypants\ARPGFramework\ARPGFramework_src.zip
+LAST_COMPILE_VERSION: 513.1494
+PACKAGE_DME_START: 
+PACKAGE_TYPE: 1
+PACKAGE_DME_INFO: 
+WINDOW: Code\Elevation.dm;Code\#define.dm;Code\Variables.dm;Code\Movement.dm;Demo\Testmap.dmm;Code\Admin.dm;Code\MovingPlatforms.dm;Code\MapObjects.dm;Code\Procedures.dm;Code\Shadow.dm;Icons\Map\Turf\Box.dmi;Demo\DemoTurf.dm
+FILE: Code\Shadow.dm
+PACKAGE_DME_DEMO: Demo\DemoTurf.dm Demo\DemoInterface.dmf Demo\Testmap.dmm
+PACKAGE_DMB_NAME: D:\Documents\BYOND\lib\cheesypants\ARPGFramework\ARPGFramework.zip
+*/
+// END_INTERNALS

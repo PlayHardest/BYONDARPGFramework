@@ -1,0 +1,83 @@
+"a" = (/mob/NPC,/turf/Tiles/Grass,/area)
+"b" = (/obj/MapObjects/Box,/turf/Tiles/Grass,/area)
+"c" = (/obj/MapObjects/Box2,/turf/Tiles/Grass,/area)
+"d" = (/obj/MapObjects/BoxTop,/turf/Tiles/Grass,/area)
+"e" = (/obj/MapObjects/Box3,/turf/Tiles/Grass,/area)
+"f" = (/obj/MapObjects/BoxSide,/turf/Tiles/Grass,/area)
+"g" = (/obj/MapObjects/BoxTop,/turf/Tiles/Grass,/area/Elevation/Base_TR{icon_state = "1-b"})
+"h" = (/obj/MapObjects/BoxTop,/turf/Tiles/Grass,/area/Elevation/Base_TR{icon_state = "2-b"})
+"i" = (/turf/Tiles/Grass,/area)
+"j" = (/obj/MapObjects/S_Slope,/turf/Tiles/Grass,/area)
+"k" = (/obj/MapObjects/E_Slope,/turf/Tiles/Grass,/area)
+"l" = (/obj/MapObjects/W_Slope,/turf/Tiles/Grass,/area)
+"m" = (/obj/MapObjects/N_Slope,/turf/Tiles/Grass,/area)
+"n" = (/obj/MapObjects/BoxTop,/turf/Tiles/Grass,/area/Elevation/Top_BL{icon_state = "2-c"})
+"o" = (/obj/MapObjects/Box_2,/turf/Tiles/Grass,/area)
+"p" = (/obj/MapObjects/BoxTop,/turf/Tiles/Grass,/area/Elevation/Top_BL{icon_state = "1-c"})
+"q" = (/obj/MapObjects/BoxSide,/turf/Tiles/Grass,/area/Elevation/Base_BL{icon_state = "1"})
+"r" = (/obj/MapObjects/BoxSide,/turf/Tiles/Grass,/area/Elevation/Base_BL{icon_state = "2"})
+"s" = (/obj/MapObjects/Box2{tag = "wait"},/turf/Tiles/Grass,/area)
+"t" = (/obj/MapObjects/BoxTop,/obj/MapObjects/BoxTop2,/turf/Tiles/Grass,/area)
+"u" = (/obj/MapObjects/BoxTop,/obj/MapObjects/BoxTop2,/turf/Tiles/Grass,/area/Elevation/Top_BL{icon_state = "4-c"})
+"v" = (/obj/MapObjects/BoxTop,/turf/Tiles/Grass,/area/Elevation/Top_BL{icon_state = "3-c"})
+"w" = (/obj/MapObjects/BoxTop,/turf/Tiles/Grass,/area/Elevation/Base_TR{icon_state = "3-b"})
+"x" = (/obj/MapObjects/BoxSide,/turf/Tiles/Grass,/area/Elevation/Base_BL{icon_state = "3"})
+"y" = (/obj/MapObjects/BoxTop,/obj/MapObjects/BoxTop2,/obj/MapObjects/Box3{step_x = -1; step_y = -1},/turf/Tiles/Grass,/area)
+"z" = (/obj/MapObjects/BoxTop,/obj/MapObjects/BoxSide2,/turf/Tiles/Grass,/area/Elevation/Base_BL{icon_state = "4"})
+"A" = (/obj/MapObjects/BoxTop,/obj/MapObjects/BoxSide2,/turf/Tiles/Grass,/area)
+"B" = (/obj/MapObjects/BoxTop,/obj/MapObjects/Box,/turf/Tiles/Grass,/area)
+"C" = (/obj/MapObjects/BoxTop,/obj/MapObjects/BoxTop2,/turf/Tiles/Grass,/area/Elevation/Base_TR{icon_state = "4-b"})
+"D" = (/Platforms/StillPlatform,/turf/Tiles/Grass,/area)
+
+(1,1,1) = {"
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiieiiiiiiiiiiiiiciiiiciiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiibiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiicibiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiibiiiiibiiiibiiiiiiiiiiiiiiiiiiiiii
+iiiDiicibiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiieiieiiibiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiikiiiliiiiiiiiiiiiiiiiiiiiiiiiiiijiiiiiiiii
+iiiiiiiiiiciiiiiiiiiikiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiikiciiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiioiliiiiiiiiiiiikiiiiliiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiciiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiimiiiiiiiii
+iiiiiiiiiiikiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiieeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiikieiiiiiaiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiidddddddddiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiidddddddtyddddiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiidddgddduCdBdhiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiidddddddzAddddiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiddiiddddnddddddddiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiivwiipdddfffffffffiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiisiixfiiqfffrffffffffiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+"}
