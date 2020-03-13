@@ -20,12 +20,7 @@ client
 		onResize(map as text|null,size as text|null)
 			set hidden=1
 			set instant = 1
-			if(map && !size)
-				var/list/l=splittext(map,"\"")
-				map=l[1]
-				var/list/l2=splittext("[l[2]] "," ")
-				size=jointext(l2,"x")
-			var/list/sz = splittext("[size]x","x")
+			var/list/sz = splittext("[size]","x")
 			var/map_width = text2num(sz[1]),map_height = text2num(sz[2])
 			map_zoom = 1
 			view_width = ceil(map_width/TILE_WIDTH)

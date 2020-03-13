@@ -34,7 +34,7 @@ window "window1"
 		title = "ARPG Framework"
 		statusbar = false
 		macro = "macro"
-		outer-size = 1324x803
+		outer-size = 1324x804
 		inner-size = 1306x757
 	elem "browser1"
 		type = BROWSER
@@ -53,7 +53,7 @@ window "window1"
 		anchor2 = 100,100
 		is-default = true
 		saved-params = "zoom;letterbox;zoom-mode"
-		on-size = "onResize \"[[id]][[size]]\""
+		on-size = "onResize \"[[id]]\" \"[[size]]\""
 		icon-size = 32
 		zoom = 1
 

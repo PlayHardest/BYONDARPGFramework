@@ -144,6 +144,14 @@ obj
 		reset_vars=list("Owner","client","nextobjs")
 	var
 		tmp
+			list
+				edge_replace=list()
+				cast_replace=list()
+
+			edge_state
+			cast_state
+			base_height=0
+
 			duration=0
 			effect=0
 			total_frames=0
@@ -155,6 +163,8 @@ obj
 			base=0
 			elev_height=0
 
+			obj/platform_base
+			obj/origin
 
 			mob/Owner
 
@@ -169,6 +179,9 @@ obj
 	Del()
 		Owner=null
 		client=null
+		if(origin?.shadow)
+			origin.shadow=null
+			origin=null
 		..()
 
 

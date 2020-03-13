@@ -110,8 +110,8 @@ mob
 				height_gained+=jump_dist
 				if(slope_obj)	height_gained=0
 				shadow.SwitchMode()
-				animate(src,pixel_z=_height,time=1)//,flags=ANIMATION_END_NOW)
-				if(client)	animate(client,pixel_z=_height,time=1)//,flags=ANIMATION_END_NOW)
+				animate(src,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
+				if(client)	animate(client,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
 				if(CancelHeightIncrease())
 					height_accel=0
 					shadow.SwitchMode()
@@ -162,10 +162,10 @@ mob
 						_height-=jump_dist
 						height_gained-=jump_dist
 						if(slope_obj)	height_gained=0
-						_height=max(elevation,_height)
-						height_gained=max(0,height_gained)
-						animate(src,pixel_z=_height,time=1)
-						if(client)	animate(client,pixel_z=_height,time=1)
+						_height=floor(max(elevation,_height))
+						height_gained=floor(max(0,height_gained))
+						animate(src,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
+						if(client)	animate(client,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
 						shadow.SwitchMode()
 					else
 						//travel_distance=0//stop all automated movement when landing
@@ -259,32 +259,33 @@ atom
 				maxgy=MAP_Y*TILE_HEIGHT
 
 
-			Center(atom/movable/M,specs="center")
+			Center(atom/movable/M,specs="center",h_adjust=0)
 				if(!M)	return
 				var/_gx,_gy
 				_gx=M.gx+((M.bound_width-bound_width)/2)
 				_gy=M.gy+((M.bound_height-bound_height)/2)
-				if(specs=="center-front")
-					if(M.dir & NORTH)	_gy=M.gy+M.bound_height+1
-					if(M.dir & SOUTH)	_gy=M.gy-bound_height-1
-					if(M.dir & EAST)	_gx=M.gx+M.bound_width+1
-					if(M.dir & WEST)	_gx=M.gx-bound_width-1
-				if(specs=="center-back")
-					if(M.dir & NORTH)	_gy=M.gy-bound_height-1
-					if(M.dir & SOUTH)	_gy=M.gy+M.bound_height+1
-					if(M.dir & EAST)	_gx=M.gx-bound_width-1
-					if(M.dir & WEST)	_gx=M.gx+M.bound_width+1
-				if(specs=="center-random-right")
-					if(M.dir & NORTH)	_gx=M.gx+rand(M.bound_width*0.5,M.bound_width)
-					if(M.dir & SOUTH)	_gx=M.gx+rand(0,M.bound_width*0.5)
-					if(M.dir & EAST)	_gy=M.gy+rand(0,M.bound_height*0.5)
-					if(M.dir & WEST)	_gy=M.gy+rand(M.bound_height*0.5,M.bound_height)
-				if(specs=="center-random-left")
-					if(M.dir & NORTH)	_gx=M.gx+rand(0,M.bound_width*0.5)
-					if(M.dir & SOUTH)	_gx=M.gx+rand(M.bound_width*0.5,M.bound_width)
-					if(M.dir & EAST)	_gy=M.gy+rand(M.bound_height*0.5,M.bound_height)
-					if(M.dir & WEST)	_gy=M.gy+rand(0,M.bound_height*0.5)
-				setPosition(floor(_gx),floor(_gy),M.z)
+				switch(specs)
+					if("center-front")
+						if(M.dir & NORTH)	_gy=M.gy+M.bound_height+1
+						if(M.dir & SOUTH)	_gy=M.gy-bound_height-1
+						if(M.dir & EAST)	_gx=M.gx+M.bound_width+1
+						if(M.dir & WEST)	_gx=M.gx-bound_width-1
+					if("center-back")
+						if(M.dir & NORTH)	_gy=M.gy-bound_height-1
+						if(M.dir & SOUTH)	_gy=M.gy+M.bound_height+1
+						if(M.dir & EAST)	_gx=M.gx-bound_width-1
+						if(M.dir & WEST)	_gx=M.gx+M.bound_width+1
+					if("center-random-right")
+						if(M.dir & NORTH)	_gx=M.gx+rand(M.bound_width*0.5,M.bound_width)
+						if(M.dir & SOUTH)	_gx=M.gx+rand(0,M.bound_width*0.5)
+						if(M.dir & EAST)	_gy=M.gy+rand(0,M.bound_height*0.5)
+						if(M.dir & WEST)	_gy=M.gy+rand(M.bound_height*0.5,M.bound_height)
+					if("center-random-left")
+						if(M.dir & NORTH)	_gx=M.gx+rand(0,M.bound_width*0.5)
+						if(M.dir & SOUTH)	_gx=M.gx+rand(M.bound_width*0.5,M.bound_width)
+						if(M.dir & EAST)	_gy=M.gy+rand(M.bound_height*0.5,M.bound_height)
+						if(M.dir & WEST)	_gy=M.gy+rand(0,M.bound_height*0.5)
+				setPosition(floor(_gx),floor(_gy),M.z,__height=(h_adjust ? M._height : null))
 
 
 			setPosition(loc1,loc2,loc3,d,no_box=0,glow=null,__height ,_height_gained,height_adjust=1)
@@ -359,7 +360,7 @@ atom
 							M._height=__height
 							M.height_gained=_height_gained ? _height_gained : __height
 							M.pixel_z=__height
-							M.shadow.SwitchMode()
+							if(M.shadow)	M.shadow.SwitchMode()
 							if(ismob(M))
 								var/mob/m=src
 								if(m.client)	m.client.pixel_z=__height
@@ -391,10 +392,8 @@ atom
 			LocationUpdate(BH=1)
 				set waitfor=0
 				sleep()
-				gx=TILE_WIDTH*(x-1)
-				gy=TILE_HEIGHT*(y-1)
-				gx+=step_x
-				gy+=step_y
+				gx=(TILE_WIDTH*(x-1))+step_x
+				gy=(TILE_HEIGHT*(y-1))+step_y
 				oppositedir=BehindDir(dir)
 				if(ismovable(src))
 					if(!(istype(src,/visual_fx)))
@@ -426,7 +425,9 @@ atom
 
 
 			GetDirectionalStep(atom/movable/m,rotation=0,speed=0,readjust=0,user_move=0,loc_only=0,fx=0)
-				if(!m)	return
+				if(!m)
+					travel_distance=0
+					return
 				speed = !speed ? GetSpeed() : speed
 				if(travel_distance && travel_distance<speed)	speed=travel_distance
 				step_size=speed
@@ -435,7 +436,7 @@ atom
 				else
 					var/matrix/M=matrix()
 					dir=NORTH
-					animate(src,transform=turn(M,Get_Angle(src,m,"north",anti_clockwise=0)),time=1,flags=ANIMATION_LINEAR_TRANSFORM)
+					animate(src,transform=turn(M,Get_Angle(src,m,"north",anti_clockwise=0)),time=world.tick_lag,flags=ANIMATION_LINEAR_TRANSFORM)
 				if(loc_only)
 					x_loc = x_loc ? x_loc : m.gx+(m.bound_width/2)
 					y_loc = y_loc ? y_loc : m.gy+(m.bound_height/2)
@@ -482,7 +483,8 @@ atom
 				if(fx)	Blur(src,-move_x,-move_y,_t=1)
 
 
-			Move_To(atom/movable/m,_rotation=0,_speed=0,homing=0,_readjust=0,t_dist=0,d_i=0,_loc=0,_fx=0,height_adjust=0)
+			Move_To(atom/movable/m,_rotation=0,_speed=0,homing=0,_readjust=0,t_dist=0,d_i=0,_loc=0,_fx=0,height_adjust=0,h_const=0)
+				//d_i = directional influence, _loc = move towards m's location at the time of calling rather than the entity m itself
 				set waitfor=0
 				if(angle_move)
 					if(!travel_distance)	return
@@ -505,18 +507,36 @@ atom
 					//travel_distance = GetDist(src,m)
 				GetDirectionalStep(m,_rotation,_speed,user_move=d_i,fx=_fx)
 				ingame=0
+				#ifdef JUMP
+				if(!h_const && height_adjust && (m.mid_air||mid_air) && (m._height!=_height) && isobj(src))//if src is an object (must continue to travel in the direction once it has
+				//started, cant change the course of the increase during movement
+					var/steps=GetDist(src,m)/_speed//get the amount of steps it should take to reach the target
+					height_adjust=(m._height - _height)/steps //find the total amount of height that must be traversed and divide it by the  steps to be taken to
+					//find the height increment per step
+				#endif
+				var/homing_dist=GetDist(src,m)
 				while(travel_distance>0)
 					if(!angle_move)	break
 					#ifdef JUMP
 					if(height_adjust && (m.mid_air||mid_air) && (m._height!=_height))
-						height_adjust=step_size
-						if(m._height < _height+height_adjust)	height_adjust = m._height - _height
-						StepHeightIncrease(height_adjust)
+						if(ismob(src) && !h_const && homing)//if its a mob then the increase is recalculated each step of the way
+							height_adjust=step_size
+							if(m._height < _height+height_adjust)	height_adjust = m._height - _height
+							//var/steps=GetDist(src,m)/_speed//get the amount of steps it should take to reach the target
+							//height_adjust=(m._height - _height)/steps //find the total amount of height that must be traversed and divide it by the steps to be taken to
+							//find the height increment per step
+						if(isobj(src) && ((_height+height_adjust)<=(height_adjust)))
+							//world<<"[_height+height_adjust]<[-height_adjust]"
+							travel_distance=0
+							break
+						StepHeightIncrease(height_adjust,_time=world.tick_lag,end_now=1)
 					#endif
 					PixelMove(move_x,move_y)
 					travel_distance-=step_size
 					if(homing)
+						if(isobj(src)) homing_dist-=step_size
 						GetDirectionalStep(m,_rotation,_speed,_readjust,d_i,_loc,_fx)
+						if(homing_dist<=0)	homing=0
 					if (world.tick_usage > 90)
 						lagstopsleep()//sleep(0.1)
 					else
@@ -644,12 +664,12 @@ atom
 			StepHeightIncrease(speed,air_borne=1,_height_gained=1,_time=1,cap=0,end_now=0)
 				if(!speed)	return
 				speed = cap ? (speed>cap? step_size : speed) : speed
-				speed = speed+_height > CEILING ? CEILING - _height : speed
+				if(ismob(src))	speed = speed+_height > CEILING ? CEILING - _height : speed
 				speed = speed+_height < 0 ? 0 - _height : speed
 				_height+=speed
 				height_gained= _height_gained? height_gained + speed : height_gained
 				height_gained=max(0,height_gained)
-				shadow.SwitchMode(_time)
+				shadow?.SwitchMode(_time)
 				if(!_height)
 					mid_air=0
 				else
@@ -829,6 +849,7 @@ obj
 			retval=0
 		if(ismob(O))
 			var/mob/m=O
+			world<<"[src] is trying to cross [m] --- [m.bound_height]:::[abs(m._height-_height)]([m._height]-[_height])"
 			if(m.bound_height>=abs(m._height-_height))//m is bumping into src
 				//grab ledge execution here
 				retval=0

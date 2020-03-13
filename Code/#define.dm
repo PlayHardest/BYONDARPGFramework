@@ -26,7 +26,6 @@
 #define HIT_PLANE 1
 #define walk_speed 5
 #define run_speed 8
-#define MAX_INVENTORY 24
 #define MAX_ACTIVE_TIME 30
 #define EDGE_CLAYER 99
 #define K_RIGHT "east"

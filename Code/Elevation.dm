@@ -1,5 +1,4 @@
 #ifdef JUMP
-
 Elevation
 	parent_type=/obj
 	//layer_add=5
@@ -44,8 +43,10 @@ obj
 				for(var/obj/o in obounds(src,0,0,0,_height+elevation))
 					if(o._height)	continue
 					o.layer=layer
-				for(var/obj/o in obounds(src,0,0,0,max(0,_height-bound_height)))
-					o.elev_height=((o.y-(y))*32)*2
+					o.platform_base=src
+				for(var/obj/o in obounds(src,0,0,0,_height-bound_height))
+					o.elev_height=(((o.y-(y))*32)*2)+32
+					o.base_height=_height
 					o.ShadowCreate()
 					//
 			if(layer_only)	return

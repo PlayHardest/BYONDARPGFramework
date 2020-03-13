@@ -190,7 +190,7 @@ proc
 		if(!anti_clockwise)	retval=abs(360-retval)
 		return retval
 
-	Object_Pool(typepath,string,obj/s=null,default=1,list/creation_params=null,_new=0)//generation_string - var name || StringGenerate() - proc name
+	Object_Pool(typepath,string,obj/s=null,default=1,creation_params=null,_new=0)//generation_string - var name || StringGenerate() - proc name
 		//generationstring is used to fetch a unique item, will see more use with items and prototyping
 		if(s)
 			if(obj_pool.len>200)
@@ -226,6 +226,7 @@ proc
 						i=o[o.len]//o[max(1,o.len-1)]
 						o[o.len]=null
 			if(i)
+				world<<i.type
 				var/list/l=obj_pool[i.type]
 				l-=i
 				if(default)	i.Default()
