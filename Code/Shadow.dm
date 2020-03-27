@@ -74,7 +74,6 @@ obj
 	Obj_Shadow
 		icon='Shadow.dmi'
 		vis_flags=VIS_UNDERLAY|VIS_INHERIT_LAYER
-		destroy=1
 
 		Create(obj/O)
 			loc=O

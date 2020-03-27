@@ -55,7 +55,8 @@ proc
 		adj=ref.gy-o.gy
 		retval=sqrt(sqr(opp)+sqr(adj))
 		if(polarity)
-			if(Get_Angle(o,ref,perspective="north")>180)
+			var/angle=Get_Angle(o,ref,perspective="source")
+			if(angle>90||angle<-90)
 				retval = -retval
 		return retval
 

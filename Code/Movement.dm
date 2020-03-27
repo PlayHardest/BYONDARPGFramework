@@ -367,19 +367,19 @@ atom
 				LocationUpdate()
 				if(grabbed)	grabbed.setPosition(src)
 
-			GetStep(atom/movable/m,d=dir,keepdir=0,returnval=0)
+			GetStep(atom/movable/m,d=dir,keepdir=0,returnval=0,bufferdist=5)
 				set waitfor=0
 				if(!m)	return
 				m.LocationUpdate()
 				var/xloc=m.gx,yloc=m.gy
 				if(d & NORTH)
-					yloc+=bound_height+5
+					yloc+=bound_height+bufferdist
 				else if(d & SOUTH)
-					yloc-=m.bound_height+5
+					yloc-=m.bound_height+bufferdist
 				else if(d & EAST)
-					xloc+=bound_width+5
+					xloc+=bound_width+bufferdist
 				else if(d & WEST)
-					xloc-=m.bound_width+5
+					xloc-=m.bound_width+bufferdist
 				if(!returnval)
 					setPosition(xloc,yloc,m.z,__height=m._height)
 					if(!keepdir)
@@ -520,11 +520,13 @@ atom
 					#ifdef JUMP
 					if(height_adjust && (m.mid_air||mid_air) && (m._height!=_height))
 						if(ismob(src) && !h_const && homing)//if its a mob then the increase is recalculated each step of the way
-							height_adjust=step_size
-							if(m._height < _height+height_adjust)	height_adjust = m._height - _height
-							//var/steps=GetDist(src,m)/_speed//get the amount of steps it should take to reach the target
-							//height_adjust=(m._height - _height)/steps //find the total amount of height that must be traversed and divide it by the steps to be taken to
-							//find the height increment per step
+							if(homing_dist<160)
+								height_adjust=step_size
+								if(m._height < _height+height_adjust)	height_adjust = m._height - _height
+							else
+								var/steps=GetDist(src,m)/_speed//get the amount of steps it should take to reach the target
+								height_adjust=(m._height - _height)/steps //find the total amount of height that must be traversed and divide it by the steps to be taken to
+								//find the height increment per step
 						if(isobj(src) && ((_height+height_adjust)<=(height_adjust)))
 							//world<<"[_height+height_adjust]<[-height_adjust]"
 							travel_distance=0
@@ -672,6 +674,23 @@ atom
 				shadow?.SwitchMode(_time)
 				if(!_height)
 					mid_air=0
+					if(ismob(src))
+						var/mob/m=src
+						m.climb_limit=m.max_climb_limit
+						m.ascend=0
+						m.set_h_accel=0
+						m.hangtime=0
+						m.descend=0
+						m.last_slope_height=m._height
+						m.height_gained=0
+						m.gravity=1
+						m.height_accel=0
+						m.height_decline=2
+						m.wall_bounces=m.max_wall_bounces
+						m.can_wall_bounce=0
+						m.shadow?.SwitchMode()
+						if(!m.elevation)
+							m.collide_layer=1
 				else
 					mid_air=air_borne
 				if(ismob(src))

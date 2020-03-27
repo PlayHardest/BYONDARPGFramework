@@ -179,9 +179,8 @@ obj
 	Del()
 		Owner=null
 		client=null
-		if(origin?.shadow)
-			origin.shadow=null
-			origin=null
+		origin=null
+		del shadow
 		..()
 
 
