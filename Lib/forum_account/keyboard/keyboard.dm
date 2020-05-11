@@ -52,7 +52,7 @@ client
 	verb
 		KeyDown(k as text)
 			set hidden = 1
-			set instant = 0
+			set instant = 1
 
 			if(input_lock) return
 			if(!use_numpad)
@@ -78,7 +78,7 @@ client
 
 		KeyUp(k as text)
 			set hidden = 1
-			set instant = 0
+			set instant = 1
 
 			k=lowertext(k)
 

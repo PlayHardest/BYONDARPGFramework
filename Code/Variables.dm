@@ -77,6 +77,7 @@ atom
 
 	movable
 		var
+			phase_tag=0
 			angle_move=0
 			x_loc=0
 			y_loc=0
@@ -91,6 +92,7 @@ atom
 			layer_level=0
 			tmp
 				list
+					phased_mobs=list()
 					reset_vars=list()
 
 				_id=0

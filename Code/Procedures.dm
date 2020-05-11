@@ -188,7 +188,7 @@ proc
 							if(retval<0)	retval+=360
 					if(retval>180)
 						retval-=360
-		if(!anti_clockwise)	retval=abs(360-retval)
+		if(!anti_clockwise)	retval=-retval
 		return retval
 
 	Object_Pool(typepath,string,obj/s=null,default=1,creation_params=null,_new=0)//generation_string - var name || StringGenerate() - proc name

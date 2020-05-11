@@ -499,7 +499,7 @@ atom
 					var/mob/o=src
 					o.ingame=0
 				_speed = !_speed ? GetSpeed() : _speed
-				angle_move=Get_Angle(src,m,"north",anti_clockwise=0)
+				angle_move=Get_Angle(src,m,"source",anti_clockwise=0)
 				travel_distance = !t_dist ? GetDist(src,m) : t_dist
 				if(_loc)
 					x_loc=0
@@ -868,7 +868,7 @@ obj
 			retval=0
 		if(ismob(O))
 			var/mob/m=O
-			world<<"[src] is trying to cross [m] --- [m.bound_height]:::[abs(m._height-_height)]([m._height]-[_height])"
+			//world<<"[src] is trying to cross [m] --- [m.bound_height]:::[abs(m._height-_height)]([m._height]-[_height])"
 			if(m.bound_height>=abs(m._height-_height))//m is bumping into src
 				//grab ledge execution here
 				retval=0
@@ -877,6 +877,8 @@ obj
 			if(phase_through)
 				phase_through=max(phase_through-1,0)
 				retval=1
+				if(phase_tag)
+					if(bound_height>=abs(_height-m._height))	phased_mobs+=m
 			if(m.phase_through)
 				retval=1
 		if(isobj(O))
@@ -888,6 +890,9 @@ obj
 					else
 						retval=1
 			else
+				retval=1
+			if(phase_through)
+				phase_through=max(phase_through-1,0)
 				retval=1
 		if(O.collide_layer==EDGE_CLAYER)
 			retval=0
