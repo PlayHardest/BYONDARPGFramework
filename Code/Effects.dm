@@ -35,7 +35,70 @@ visual_fx
 				sleep(-1)
 			Owner.vars[varname]=null
 			Recycle(e=src)
+
 proc
+	/*
+	0.15,0.15,0.15,0
+	0.15,0.15,0.15,0
+	0.15,0.15,0.15,0
+	0   ,0   ,   0,1
+
+	1,1,1,0		1,1,1,0
+	1,1,1,0		1,1,1,0
+	1,1,1,0		1,1,1,0
+	0,0,0,1		0,0,0,1
+
+	NB - IN THE MATRIX OPERATIONS CODE DEFINED BELOW, MULTI DIMENSIONAL LISTS ARE REPRESENTED AS :
+
+	LIST[Y][X]
+	*/
+	C_MatrixMultiplication(list/A,A_col=4,A_row=4,list/B,B_col=4,B_row=4,opaque=1)
+		if(!A||!B||!A_col||!B_col||!A_row||!B_row)	CRASH("What the hell are you doing?")
+		if(A_row!=B_row || A_col!=B_col)	CRASH("Both matrices must be of the same size")
+		var/list/C[A_col][A_row]
+		var/newval,_x,_y,list/retval
+		//first, convert them into multi-dimensional lists for ease of use
+		var/list/_A[A_col][A_row]
+		_A=List_to_multi(A,A_col,A_row)
+		var/list/_B[B_col][B_row]
+		_B=List_to_multi(B,B_col,B_row)
+		//start at the location you would like to place the result, the top left corner
+		for(var/y=A_col; y>0; y--)//start at the top row
+			for(var/x=1; x<A_row+1; x++)//start at the left most value
+				newval=0
+				_y=A_col
+				_x=1
+				while(_y>0 && _x<=A_row)//find the dot product
+					//world<<"adding [_A[y][_x]]*[_B[_y][x]] to [newval]"
+					newval+=_A[y][_x]*_B[_y][x]
+					_x++
+					_y--
+				world<<"[newval], \..."
+				C[y][x]=newval//assign the new value to the location
+			world<<""
+		//C[1][4]=C[1][4]?C[1][4]:1
+		retval=Multi_to_list(C,A_row,B_row)
+		return retval
+
+
+
+	List_to_multi(list/L,rows=1,cols=1)
+		var/list/M[rows][cols]
+		for(var/i=rows;i>0;i--)
+			for(var/a=1;a<=cols;a++)
+				M[i][a]=L[(abs(i-rows)*cols)+a]
+				//world<<"L to M))M([i])([a])=[M[i][a]] || L([(abs(i-rows)*cols)+a])=[L[(abs(i-rows)*cols)+a]]"
+				//y, x
+		return M
+
+	Multi_to_list(list/M,rows=1,cols=1)
+		var/list/L[rows*cols]
+		for(var/i=rows;i>0;i--)
+			for(var/a=1;a<=cols;a++)
+				L[(abs(i-rows)*cols)+a]=M[i][a]
+				//world<<"M to L))M([i])([a])=[M[i][a]] || L([(abs(i-rows)*cols)+a])=[L[(abs(i-rows)*cols)+a]]"
+		return L
+
 	Effect_Prep()
 		set waitfor=0
 		for(var/i=0;i<50;i++)
@@ -107,7 +170,7 @@ proc
 		Recycle(e=I)
 
 
-	Blur(mob/m,_x,_y,_t=10)
+	Blur(mob/m,_x,_y,_t=10,p_x=0,p_y=0,pix_offset=1,pix_anim=0)
 		if(!m||(!_x && !_y))	return
 		if(!m.blur_fx)
 			m.blur_fx=Recycle(/visual_fx/Blur)
@@ -119,10 +182,18 @@ proc
 		_y/=2
 		_x=max(min(_x,5),-5)
 		_y=max(min(_y,5),-5)
+		if(pix_offset)
+			p_x = p_x ? p_x : _x
+			p_y = p_y ? p_y : _y
 		//world<<"blur at [_x],[_y]"
-		m.blur_fx.pixel_x=_x
-		m.blur_fx.pixel_y=_y
-		animate(m.blur_fx.filters[m.blur_fx.filters.len],x=floor(_x),y=floor(_y),time=_t)
+		if(pix_anim)
+			animate(m.blur_fx,pixel_x=p_x,pixel_y=p_y,time=_t)
+			animate(m.blur_fx.filters[m.blur_fx.filters.len],x=floor(_x),y=floor(_y),time=_t,flags=ANIMATION_PARALLEL)
+		else
+			world<<"[p_x],[p_y]"
+			m.blur_fx.pixel_x=p_x
+			m.blur_fx.pixel_y=p_y
+			animate(m.blur_fx.filters[m.blur_fx.filters.len],x=floor(_x),y=floor(_y),time=_t)
 
 
 		/*if(!m.filterinfo.blur)

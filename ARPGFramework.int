@@ -1,7 +1,7 @@
 // BEGIN_INTERNALS
 /*
 MAP_ZOOM: 1.000
-LAST_COMPILE_TIME: 1588919038
+LAST_COMPILE_TIME: 1613974290
 PACKAGE_RSC_NAME: D:\Documents\BYOND\lib\cheesypants\ARPGFramework\ARPGFramework_rsc.zip
 DIR: Code Demo Icons Icons\Map Icons\Map\Turf Icons\Map\UI Lib Lib\forum_account Lib\forum_account\keyboard Lib\forum_account\text Lib\ter13 Lib\ter13\stdlib 
 AUTO_FILE_DIR: ON
@@ -12,8 +12,8 @@ LAST_COMPILE_VERSION: 513.1513
 PACKAGE_DME_START: 
 PACKAGE_TYPE: 1
 PACKAGE_DME_INFO: 
-WINDOW: Code\Elevation.dm;Code\#define.dm;Code\Variables.dm;Code\Movement.dm;Code\Procedures.dm;Code\Admin.dm;Code\MovingPlatforms.dm;Code\MapObjects.dm;Code\Shadow.dm;Icons\Map\Turf\Box.dmi;Code\Effects.dm;Icons\Map\Turf\Base_TR.dmi;Code\MapDimensions.dm
-FILE: Code\Procedures.dm
+WINDOW: Code\Elevation.dm;Code\#define.dm;Code\Variables.dm;Code\Movement.dm;Code\Procedures.dm;Code\Admin.dm;Code\MovingPlatforms.dm;Code\MapObjects.dm;Code\Shadow.dm;Icons\Map\Turf\Box.dmi;Code\Camera.dm;Code\Keyboard.dm;Code\Effects.dm
+FILE: Code\Effects.dm
 PACKAGE_DME_DEMO: Demo\DemoTurf.dm Demo\DemoInterface.dmf Demo\Testmap.dmm
 PACKAGE_DMB_NAME: D:\Documents\BYOND\lib\cheesypants\ARPGFramework\ARPGFramework.zip
 */

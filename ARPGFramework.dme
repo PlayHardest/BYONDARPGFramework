@@ -23,6 +23,7 @@
 #include "Readme.dm"
 #include "Code\#define.dm"
 #include "Code\Admin.dm"
+#include "Code\Camera.dm"
 #include "Code\Effects.dm"
 #include "Code\Elevation.dm"
 #include "Code\Keyboard.dm"

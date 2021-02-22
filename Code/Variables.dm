@@ -1,7 +1,7 @@
 
 Filters
 	var
-		blur=0
+		blur
 
 Preferences
 
@@ -44,6 +44,9 @@ var
 
 client
 	var
+		tmp
+			Camera/camera
+
 		hudobj/chatbox
 		hudobj/textbox
 		hudobj/active_textbox
@@ -65,6 +68,12 @@ client
 		textbox=null
 		active_textbox=null
 		screen=list()
+		camera.loc=null
+		camera=null
+		controls=null
+		options=null
+		//del controls
+		//del options
 
 
 atom
@@ -94,9 +103,13 @@ atom
 				list
 					phased_mobs=list()
 					reset_vars=list()
+					watchers=list()
 
 				_id=0
 
+				pixel_height=1
+				dist_moved=0
+				shadow_height=0
 				no_dense=0
 				set_h_accel=0
 				bump_movement_action=""
@@ -128,6 +141,7 @@ atom
 				active_time=0
 				move_x
 				move_y
+				move_h
 				lx
 				ly
 				//sub_step_x = 0
@@ -166,7 +180,7 @@ obj
 			elev_height=0
 
 			obj/platform_base
-			obj/origin
+			obj/origin_obj
 
 			mob/Owner
 
@@ -181,7 +195,7 @@ obj
 	Del()
 		Owner=null
 		client=null
-		origin=null
+		origin_obj=null
 		del shadow
 		..()
 

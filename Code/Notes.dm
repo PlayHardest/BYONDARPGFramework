@@ -25,6 +25,7 @@ Spawn(x)
 	function like a blocking proc, which is honestly not something that there is much actual use for. Often, it's better to not use this quirk, and I can't think of any
 	reasons to actually use it.
 
+1#INF - infinity macro
 
 Appearance Churn :
 	When you want to add a value to the overlays/underlays do :

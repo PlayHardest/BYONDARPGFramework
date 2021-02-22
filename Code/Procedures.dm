@@ -48,11 +48,16 @@ proc
 		if(!isnum(n))	return 0
 		return n*n
 
-	GetDist(atom/movable/o,atom/movable/ref,polarity=0)//o is user, ref is target
+	GetDist(atom/movable/o,atom/movable/ref,polarity=0,xloc=0,yloc=0,h=0)//o is user, ref is target
 		if(!o||!ref)	return 0
+		ref.LocationUpdate()
+		o.LocationUpdate()
 		var/opp,adj,retval
 		opp=ref.gx-o.gx
-		adj=ref.gy-o.gy
+		adj=(ref.gy+(h ? ref._height : 0))-(o.gy+(h==1 ? o._height : 0))
+		if(xloc||yloc)
+			opp=ref.gx-xloc
+			adj=(ref.gy+(h ? ref._height : 0))-(yloc+(h==1 ? o._height : 0))
 		retval=sqrt(sqr(opp)+sqr(adj))
 		if(polarity)
 			var/angle=Get_Angle(o,ref,perspective="source")
@@ -111,7 +116,8 @@ proc
 		return retval
 
 
-	Get_Angle(atom/movable/o,atom/movable/ref,perspective="source",anti_clockwise=1,_x_loc,_y_loc,d)//increases in an anti clockwise fashion
+
+	Get_Angle(atom/movable/o,atom/movable/ref,perspective="source",anti_clockwise=1,_x_loc,_y_loc,d,x_val,y_val,_move_h=0)//increases in an anti clockwise fashion
 		//0 lies on WEST||o = source, ref = target,
 		var/retval=0
 		if((o || (_x_loc && _y_loc)) && ref)
@@ -120,17 +126,20 @@ proc
 			var/val1,val2,_dir
 			if(_x_loc && _y_loc)
 				val1=_x_loc-ref.gx
-				val2=_y_loc-ref.gy
-				retval = round(atan2(val1,val2),1)
-				if(d)	_dir=d
+				val2=_y_loc-ref.gy + (_move_h ? (o._height-ref._height) : 0)
+				retval = atan2(val1,val2)
+				_dir= d ? d : o.dir
 			else
 				val1=o.gx-ref.gx
-				val2=o.gy-ref.gy
+				val2=o.gy-ref.gy + (_move_h ? (o._height-ref._height) : 0)
+				if(x_val || y_val)
+					val1 = x_val
+					val2 = y_val
 				if(o.z==ref.z)
-					retval = round(atan2(val1,val2),1)
+					retval = atan2(val1,val2)
 				else
 					return 0
-				_dir=o.dir
+				_dir= d ? d : o.dir
 			switch(perspective)
 				if("north")
 					retval+=NORTH_ANGLE
@@ -211,7 +220,6 @@ proc
 			obj_pool[s.type]=l
 			s.expire_time=world.realtime+6000
 			s.DelayedDestroy()
-
 		else
 			var/atom/movable/i
 			if(typepath)

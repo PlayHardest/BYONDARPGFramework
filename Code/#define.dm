@@ -34,7 +34,7 @@
 #define K_DOWN "south"
 #define K_JUMP "space"
 #define MAX_VIEW_TILES 800
-#define degrees_to_rad(s) s * 2 * pi/360
+#define degrees_to_rad(s) s * (pi/180)
 #define even(x) x % 2 = 1 ? (round(x,1)-1) : x
 #define odd(x) x % 2 = 0 ? (round(x,1)-1) : x
 

@@ -77,8 +77,8 @@ obj
 
 		Create(obj/O)
 			loc=O
-			origin=O
-			origin.shadow=src
+			origin_obj=O
+			origin_obj.shadow=src
 			Initialize(O)
 
 
@@ -91,14 +91,14 @@ obj
 			set waitfor=0
 			if(t>=1)
 				while(hang_shadow)
-					if(!origin)	break
+					if(!origin_obj)	break
 					sleep(1)
 					sleep(-1)
-			if(!origin)	return
+			if(!origin_obj)	return
 			//layer=Owner.layer
-			if(origin.mid_air)
+			if(origin_obj.mid_air)
 				hang_shadow=1
-				animate(src,pixel_y=-origin.height_gained,time=t,flags=ANIMATION_END_NOW)
+				animate(src,pixel_y=-origin_obj.height_gained,time=t,flags=ANIMATION_END_NOW)
 				if(t>=1)	sleep(t)
 				hang_shadow=0
 

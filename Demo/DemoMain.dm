@@ -23,6 +23,15 @@ mob
 		client.textbox.filters +=filter(type="drop_shadow", x=0, y=-1,size=0, offset=0, color=rgb(3,3,3,170))
 		player_list+=client
 
+		/*AskQuestion()
+
+	proc
+		AskQuestion()
+			var/decision = input("Yes or No") as text|null
+			while((decision!="Yes" && decision!="yes") && (decision!="No" && decision!="no"))
+				alert(src,"Wrong","OK")
+				decision = input("Yes or No") as text|null*/
+
 mob
 	NPC
 		icon='BaseNpc.dmi'

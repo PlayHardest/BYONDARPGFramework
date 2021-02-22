@@ -44,6 +44,7 @@ mob
 		step_size=GetSpeed()
 		move_x=0
 		move_y=0
+		move_h=0
 		x_loc=0
 		y_loc=0
 		travel_distance=0
@@ -91,8 +92,8 @@ mob
 						run=0
 						step_size=GetSpeed()
 					DoubleJumpfx(src)
-			if(run)
-				dist/=1.5
+			//if(run)
+			//	dist/=1.5
 			height_accel=dist
 			if(client)	client.keys["[client.controls.jump]"]=0
 			mid_air=1
@@ -110,8 +111,9 @@ mob
 				height_gained+=jump_dist
 				if(slope_obj)	height_gained=0
 				shadow.SwitchMode()
-				animate(src,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
-				if(client)	animate(client,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
+				if(pixel_height)
+					animate(src,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
+					if(client)	animate(client,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
 				if(CancelHeightIncrease())
 					height_accel=0
 					shadow.SwitchMode()
@@ -164,8 +166,9 @@ mob
 						if(slope_obj)	height_gained=0
 						_height=floor(max(elevation,_height))
 						height_gained=floor(max(0,height_gained))
-						animate(src,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
-						if(client)	animate(client,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
+						if(pixel_height)
+							animate(src,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
+							if(client)	animate(client,pixel_z=_height,time=1,flags=ANIMATION_END_NOW)
 						shadow.SwitchMode()
 					else
 						//travel_distance=0//stop all automated movement when landing
@@ -184,6 +187,7 @@ mob
 						mid_air=0
 						step_size=GetSpeed()
 						shadow.SwitchMode()
+						if(blur_fx)	RemoveBlur(src)
 						if(!elevation)
 							collide_layer=1
 		#endif
@@ -306,13 +310,15 @@ atom
 								M.mid_air=1
 								M._height=O._height
 								M.height_gained=O.height_gained
-								M.pixel_z=O._height
-								M.shadow.SwitchMode()
-								if(ismob(M))
-									var/mob/m=src
-									if(m.client)	m.client.pixel_z=O._height
+								if(M.pixel_height)
+									M.pixel_z=O._height
+									if(ismob(M))
+										var/mob/m=src
+										if(m.client)	m.client.pixel_z=O._height
+								if(M.shadow)	M.shadow.SwitchMode()
+
 					if(d)	dir=d
-				if(!no_box && !(istype(src,/visual_fx/)))
+				/*if(!no_box && !(istype(src,/visual_fx/)))
 					var/atom/movable/pushloc=DenseInBox(src,bound_width,bound_height,loc1,loc2,loc3)
 					if(pushloc && _height<=pushloc._height)
 						world<<"[src] is being placed on top of [pushloc]"
@@ -328,7 +334,7 @@ atom
 								if(pushloc.bound_width>bound_width*2)	return
 							if(WEST)
 								loc1-=pushloc.bound_width+2//+bound_width
-								if(pushloc.bound_width>bound_width*2)	return
+								if(pushloc.bound_width>bound_width*2)	return*/
 				LocationFind(loc3)
 				loc1=min(maxgx-bound_width,loc1)
 				loc1=max(1,loc1)
@@ -359,16 +365,20 @@ atom
 							M.mid_air=1
 							M._height=__height
 							M.height_gained=_height_gained ? _height_gained : __height
-							M.pixel_z=__height
+							if(M.pixel_height)
+								M.pixel_z=__height
+								if(ismob(M))
+									var/mob/m=src
+									if(m.client)	m.client.pixel_z=__height
 							if(M.shadow)	M.shadow.SwitchMode()
-							if(ismob(M))
-								var/mob/m=src
-								if(m.client)	m.client.pixel_z=__height
+
+				for(var/Camera/c in watchers)//for all of the watchers
+					c.setPosition(src)//jump to the movable's location
+
 				LocationUpdate()
 				if(grabbed)	grabbed.setPosition(src)
 
 			GetStep(atom/movable/m,d=dir,keepdir=0,returnval=0,bufferdist=5)
-				set waitfor=0
 				if(!m)	return
 				m.LocationUpdate()
 				var/xloc=m.gx,yloc=m.gy
@@ -392,8 +402,8 @@ atom
 			LocationUpdate(BH=1)
 				set waitfor=0
 				sleep()
-				gx=(TILE_WIDTH*(x-1))+step_x
-				gy=(TILE_HEIGHT*(y-1))+step_y
+				gx=floor((TILE_WIDTH*(x-1))+step_x)//+bound_x
+				gy=floor((TILE_HEIGHT*(y-1))+step_y)//+bound_y
 				oppositedir=BehindDir(dir)
 				if(ismovable(src))
 					if(!(istype(src,/visual_fx)))
@@ -424,7 +434,7 @@ atom
 				ly=gy
 
 
-			GetDirectionalStep(atom/movable/m,rotation=0,speed=0,readjust=0,user_move=0,loc_only=0,fx=0)
+			GetDirectionalStep(atom/movable/m,rotation=0,speed=0,readjust=0,user_move=0,loc_only=0,fx=0,h=0)
 				if(!m)
 					travel_distance=0
 					return
@@ -438,13 +448,13 @@ atom
 					dir=NORTH
 					animate(src,transform=turn(M,Get_Angle(src,m,"north",anti_clockwise=0)),time=world.tick_lag,flags=ANIMATION_LINEAR_TRANSFORM)
 				if(loc_only)
-					x_loc = x_loc ? x_loc : m.gx+(m.bound_width/2)
-					y_loc = y_loc ? y_loc : m.gy+(m.bound_height/2)
-					move_x=x_loc-gx
-					move_y=y_loc-gy
+					x_loc = x_loc ? x_loc : m.gx
+					y_loc = y_loc ? y_loc : m.gy+(h ? m._height : 0)
+					move_x=x_loc - gx
+					move_y=y_loc - gy
 				else
-					move_x=m.gx-gx
-					move_y=m.gy-gy
+					move_x=m.gx - gx
+					move_y=(m.gy + (h ? m._height : 0)) - gy
 				if(readjust)
 					switch(GetDir(src,m))
 						if(NORTH,SOUTH)
@@ -452,29 +462,7 @@ atom
 						if(EAST,WEST)
 							move_y/=2
 				var/x_alter=0,y_alter=0
-				/*if(ismob(src))
-					var/mob/M=src
-					if(user_move)//////////////////////
-						var/d=M.GetMovementDirection()
-						if(d && M.client)
-							switch(GetDir(M,m))
-								if(NORTH,SOUTH)
-									switch(d)
-										if(EAST)
-											//M.move_x+=floor(M.step_size/user_move)
-											x_alter=floor(M.step_size/user_move)
-										if(WEST)
-											//M.move_x-=floor(M.step_size/user_move)
-											x_alter=-floor(M.step_size/user_move)
-								if(EAST,WEST)
-									switch(d)
-										if(NORTH)
-											//M.move_y+=floor(M.step_size/user_move)
-											y_alter=floor(M.step_size/user_move)
-										if(SOUTH)
-											//M.move_y-=floor(M.step_size/user_move)
-											y_alter=-floor(M.step_size/user_move)*/
-				var/dist=sqrt(move_x*move_x + move_y*move_y)//check against this
+				var/dist=max(1,sqrt((move_x**2) + (move_y**2)))//check against this
 				var/scale=step_size/dist
 				move_x+=x_alter
 				move_y+=y_alter
@@ -483,17 +471,17 @@ atom
 				if(fx)	Blur(src,-move_x,-move_y,_t=1)
 
 
-			Move_To(atom/movable/m,_rotation=0,_speed=0,homing=0,_readjust=0,t_dist=0,d_i=0,_loc=0,_fx=0,height_adjust=0,h_const=0)
+			Move_To(atom/movable/m,_rotation=0,_speed=0,homing=0,_readjust=0,t_dist=0,d_i=0,_loc=0,_fx=0,height_adjust=0,h_const=0,isbeam=0)
 				//d_i = directional influence, _loc = move towards m's location at the time of calling rather than the entity m itself
 				set waitfor=0
-				if(angle_move)
+				if(walking)
 					if(!travel_distance)	return
 					travel_distance=0
-					while(angle_move)
+					while(walking)
 						sleep(0)
 						sleep(world.tick_lag)
 						sleep(-1)
-					angle_move=0
+					walking=0
 				if(!m)	return
 				if(ismob(src))
 					var/mob/o=src
@@ -505,45 +493,50 @@ atom
 					x_loc=0
 					y_loc=0
 					//travel_distance = GetDist(src,m)
-				GetDirectionalStep(m,_rotation,_speed,user_move=d_i,fx=_fx)
+				GetDirectionalStep(m,_rotation,_speed,user_move=d_i,fx=_fx,h=isbeam)
 				ingame=0
+				walking=1
+				var/true_speed
 				#ifdef JUMP
-				if(!h_const && height_adjust && (m.mid_air||mid_air) && (m._height!=_height) && isobj(src))//if src is an object (must continue to travel in the direction once it has
-				//started, cant change the course of the increase during movement
-					var/steps=GetDist(src,m)/_speed//get the amount of steps it should take to reach the target
-					height_adjust=(m._height - _height)/steps //find the total amount of height that must be traversed and divide it by the  steps to be taken to
+				true_speed=sqrt((move_x**2)+(move_y**2))
+				if(height_adjust && (m.mid_air||mid_air) && (m._height!=_height) && !homing)//if src is an object (must continue to travel in the direction once it has
+				//started, cant change the course of the height increase during movement
+					var/steps=GetDist(src,m,h=(isbeam?2:0))/true_speed//get the amount of steps it should take to reach the target
+					height_adjust=(m._height - _height)/steps//find the total amount of height that must be traversed and divide it by the steps to be taken to
 					//find the height increment per step
+					if(!isbeam)	h_const = height_adjust > 0 ? min(height_adjust,step_size) : max(height_adjust, -step_size)
+				height_adjust = h_const ? h_const : height_adjust
 				#endif
-				var/homing_dist=GetDist(src,m)
+				var/homing_dist=GetDist(src,m,h=(isbeam?2:0))
 				while(travel_distance>0)
-					if(!angle_move)	break
 					#ifdef JUMP
 					if(height_adjust && (m.mid_air||mid_air) && (m._height!=_height))
-						if(ismob(src) && !h_const && homing)//if its a mob then the increase is recalculated each step of the way
-							if(homing_dist<160)
-								height_adjust=step_size
-								if(m._height < _height+height_adjust)	height_adjust = m._height - _height
-							else
-								var/steps=GetDist(src,m)/_speed//get the amount of steps it should take to reach the target
-								height_adjust=(m._height - _height)/steps //find the total amount of height that must be traversed and divide it by the steps to be taken to
-								//find the height increment per step
-						if(isobj(src) && ((_height+height_adjust)<=(height_adjust)))
-							//world<<"[_height+height_adjust]<[-height_adjust]"
+						if(homing)//if its a mob then the increase is recalculated each step of the way
+							true_speed=sqrt((move_x**2)+(move_y**2))
+							var/steps=GetDist(src,m,h=(isbeam?2:0))/true_speed//get the amount of steps it should take to reach the target
+							height_adjust=(m._height - _height)/steps //find the total amount of height that must be traversed and divide it by the steps to be taken to
+							//find the height increment per step
+							if(!isbeam)
+								height_adjust=height_adjust > 0 ? min(height_adjust,step_size) : max(height_adjust, -step_size)//keep the value lower than step_size
+						if(isobj(src) && ((height_gained+height_adjust)<=(height_adjust)))
 							travel_distance=0
 							break
-						StepHeightIncrease(height_adjust,_time=world.tick_lag,end_now=1)
+						if(dist_moved)
+							StepHeightIncrease(height_adjust,_time=world.tick_lag,end_now=1)
+					//world<<"dist moved last is [dist_moved] -- ([height_adjust] && ([m.mid_air]||[mid_air]) && ([m._height]!=[_height])"
 					#endif
 					PixelMove(move_x,move_y)
 					travel_distance-=step_size
 					if(homing)
-						if(isobj(src)) homing_dist-=step_size
-						GetDirectionalStep(m,_rotation,_speed,_readjust,d_i,_loc,_fx)
+						if(isobj(src)) homing_dist-=true_speed
+						GetDirectionalStep(m,_rotation,_speed,_readjust,d_i,_loc,_fx,h=isbeam)
 						if(homing_dist<=0)	homing=0
 					if (world.tick_usage > 90)
 						lagstopsleep()//sleep(0.1)
 					else
 						sleep(world.tick_lag)
 				angle_move=0
+				walking=0
 				if(_fx)
 					RemoveBlur(src)
 				EndAutoMovement()
@@ -600,16 +593,19 @@ atom
 					_x=1
 				if(_dir & WEST)
 					_x=-1
-				_x*=speed
-				_y*=speed
-				if(_fx)	Blur(src,-_x,-_y,_t=1)
+				move_x=_x*speed
+				move_y=_y*speed
+				if(_fx)	Blur(src,-move_x,-move_y,_t=1)
 				if(slide)
-					return PixelSlide(_x,_y)
+					return PixelSlide(move_x,move_y)
 				else
-					return PixelMove(_x,_y)
+					return PixelMove(move_x,move_y)
 
-			Walk(dist,d,speed,height_follow=0,height_stop=0,falloff_height=0,height_step)//will not stop walking until _height is 0
-				set waitfor=0
+			Walk(dist,d,speed,height_follow=0,height_stop=0,falloff_height=0,height_step=0)
+				//height_follow flag is used to decide whether or not to check for the falloff_height flag
+				//height_stop determines whether or not the caller will continue to after landing
+				//falloff_height prevents height decrease until a certain distance has been travelled
+				//height_step alters the height by the provided amount each turn
 				if(!dist)	return
 				if(walking)
 					if(!travel_distance)	return
@@ -625,7 +621,7 @@ atom
 				travel_distance=dist
 				if(falloff_height)//if falloff is enabled
 					if(mid_air)//if the caller is mid air
-						falloff_height=dist//specify the falloff distance
+						falloff_height=travel_distance//specify the falloff distance
 						gravity=0//and disallow height deductions until the gravity is 0
 					else//otherwise disable the flag
 						falloff_height=0
@@ -638,7 +634,6 @@ atom
 							falloff_height-=step_size//decrease it
 							if(falloff_height<=0)//when it reaches zero
 								gravity=1//allow height deductions
-								//height_follow=0//disable the flag which allows delayed distance reduction
 						if(mid_air)//once the caller is mid air
 							travel_distance+=step_size//prevent the caller's distance to travel from decreasing
 						else//otherwise
@@ -648,7 +643,7 @@ atom
 							else
 								height_follow=0//otherwise let the caller continue moving unabated
 					#ifdef JUMP
-					if(height_step)	StepHeightIncrease(height_step,_time=world.tick_lag)
+					if(height_step)	StepHeightIncrease(height_step,_time=world.tick_lag,end_now=1)
 					#endif
 					if(travel_distance>0 && travel_distance<speed)
 						step_size=travel_distance
@@ -693,18 +688,19 @@ atom
 							m.collide_layer=1
 				else
 					mid_air=air_borne
-				if(ismob(src))
-					var/mob/m=src
-					m.StateMachine()
-					if(m.client)
-						if(end_now)
-							animate(m.client,pixel_z=_height,time=_time,flags=ANIMATION_END_NOW)
-						else
-							animate(m.client,pixel_z=_height,time=_time)
-				if(end_now)
-					animate(src,pixel_z=_height,time=_time,flags=ANIMATION_END_NOW)
-				else
-					animate(src,pixel_z=_height,time=_time)
+				if(pixel_height)
+					if(ismob(src))
+						var/mob/m=src
+						m.StateMachine()
+						if(m.client)
+							if(end_now)
+								animate(m.client,pixel_z=_height,time=_time,flags=ANIMATION_END_NOW)
+							else
+								animate(m.client,pixel_z=_height,time=_time)
+					if(end_now)
+						animate(src,pixel_z=_height,time=_time,flags=ANIMATION_END_NOW)
+					else
+						animate(src,pixel_z=_height,time=_time)
 			#endif
 
 			EdgeCheck(obj/O)
@@ -750,6 +746,15 @@ atom
 			if(grabbedby)	return
 			if(_move)
 				.=..()
+				dist_moved=.
+
+				var/list/camera_args = args//get the arguments list for this proc call
+				for(var/Camera/c in watchers)
+					if(dist_moved==1 && step_size!=1)//if 1 is returned (indicating a jump) and the watched movable does not move in 1 pixel steps
+						c.setPosition(src)//jump to the movable's location
+					else
+						c.Move(arglist(camera_args))//Execute Move() on the camera using the same arguments
+
 				if(ismob(src))
 					var/mob/m=src
 					m.EdgeCheck(m.occupying)
@@ -835,6 +840,7 @@ mob
 			if(o.density)
 				if(o.power)
 					if(bound_height>=abs(_height-o._height))
+						world<<"[src] your height is [_height]||[o._height]--[o]"
 						retval=0
 					else
 						retval=1
@@ -869,7 +875,7 @@ obj
 		if(ismob(O))
 			var/mob/m=O
 			//world<<"[src] is trying to cross [m] --- [m.bound_height]:::[abs(m._height-_height)]([m._height]-[_height])"
-			if(m.bound_height>=abs(m._height-_height))//m is bumping into src
+			if(m.bound_height*2>=abs(m._height-_height))//m is bumping into src
 				//grab ledge execution here
 				retval=0
 			else
@@ -877,9 +883,7 @@ obj
 			if(phase_through)
 				phase_through=max(phase_through-1,0)
 				retval=1
-				if(phase_tag)
-					if(bound_height>=abs(_height-m._height))	phased_mobs+=m
-			if(m.phase_through)
+			if(m.phase_through||Owner==m)
 				retval=1
 		if(isobj(O))
 			var/obj/o=O
